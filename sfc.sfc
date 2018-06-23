@@ -1,0 +1,33 @@
+<?php
+//检查system版本
+if(!defined('system::VISION')||system::VISION<3){
+	//var_dump(defined('system::VISION'));
+	die('核心框架system版本过低');
+}
+//版本及版权信息
+			define('VERSION','1.0.0.0');
+			define('MAKE_TIME','2018-06-23');
+			define('VERSION_INFO',VERSION.' &nbsp;'.MAKE_TIME);
+			define('COPY','星星站点 &copy;2013-2018 星星站点 保留所有权利');
+			$this->cfgs['succ_dir']='../succ/';
+			$this->cfgs['succ_app_id']='1';
+			$this->cfgs['succ_app_key']='';
+			function loaded_ok($system){
+				require_once $system->ini_get('succ_dir').'/succ.php';
+				$system->succ=succ::get_obj();
+				$system->succ->set_app_info($system->ini_get('succ_app_id'),$system->ini_get('succ_app_key'));
+			}
+
+			
+			function get_post(){
+				return json_decode(file_get_contents('php://input'));
+			}
+function create_uuid(){    //可以指定前缀
+    $str = md5(uniqid(mt_rand(), true));   
+    $uuid  = substr($str,0,8) . '-';   
+    $uuid .= substr($str,8,4) . '-';   
+    $uuid .= substr($str,12,4) . '-';   
+    $uuid .= substr($str,16,4) . '-';   
+    $uuid .= substr($str,20,12);   
+    return $uuid;
+}
