@@ -1,28 +1,31 @@
 <?php
+namespace minecraft;
 class api_control{
 	public function authserver_page($system,$a){
 
 		switch($a){
-			case 'authenticate'://登陆:https://minecraft.thestarweb.sweb/api/authserver/authenticate
+			case 'authenticate'://登陆:/api/authserver/authenticate
 				$post=get_post();
 				$user=new user_server($system);
-				if(isset($post->username)&&isset($post->password)&&$id=$user->is_user($post->username,$post->password)){
-					$info=$user->get_info($id);
-					if($info){
-						$at=md5(uniqid(mt_rand(), true));
-						$ct=isset($post->clientToken)?$post->clientToken:md5(time().rand(10,99));
-						//var_dump(md5(time().rand(10,99)));exit;
-						$user->save_token($id,$at,$ct);
-						echo json_encode([
-							'accessToken'=>$at,
-							'clientToken'=>$ct,
-							'availableProfiles'=>$info,
-							'selectedProfile'=>$info[0]
-						]);
-						exit;
+				if(isset($post->username)&&isset($post->password)&&$uinfo=$user->is_user($post->username,$post->password)){
+					if($uinfo['isok']){
+						$info=$user->get_info($uinfo['uid']);
+						if($info){
+							$at=$uinfo['key'];//md5(uniqid(mt_rand(), true));
+							$ct=isset($post->clientToken)?$post->clientToken:md5(time().rand(10,99));
+							//var_dump(md5(time().rand(10,99)));exit;
+							//$user->save_token($id,$at,$ct);
+							echo json_encode([
+								'accessToken'=>$at,
+								'clientToken'=>$ct,
+								'availableProfiles'=>$info,
+								'selectedProfile'=>$info[0]
+							]);
+							exit;
+						}
 					}
 				}
-
+				header('HTTP/1.1 403 ForbiddenOperationException');
 				break;
 		}
 	}

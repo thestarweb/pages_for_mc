@@ -1,13 +1,15 @@
 <?php
+namespace minecraft;
 class user_server{
 	private $system;
 	public function __construct($system){
 		$this->system=$system;
+		$_SERVER['HTTP_USER_AGENT']="Minecrat Api";
 	}
 	public function is_user($username,$password){
-		if($username=='2@star.star'&&$password=='123') return 1;
-		if($username=='1@1.com'&&$password=='123') return 2;
-		return false;
+		// if($username=='2@star.star'&&$password=='123') return 1;
+		// if($username=='1@1.com'&&$password=='123') return 2;
+		return $this->system->succ->call_fun('login','try_to',['name',$username,$password]);
 	}
 	public function get_info($uid){
 		$uid+=0;
@@ -59,9 +61,10 @@ class user_server{
 		$this->system->db()->u_exec('INSERT INTO `@%_token`(`id`,`AT`,`CT`,`time`) VALUE(?,?,?,?)',[$id,$at,$ct,time()]);
 	}
 	public function joinserver($at,$uuid,$serverid){
-		$a=$this->system->db()->u_exec('SELECT `id` FROM `@%_token` WHERE `AT`=?',[$at]);
-		if($a){
-			$this->system->db()->u_exec('INSERT INTO `@%_join_server`(`serverid`,`uuid`,`uid`,`ip`,`time`) VALUE(?,?,?,?,?)',[$serverid,$uuid,$a[0]['id'],$this->system->uip(),time()]);
+		//$a=$this->system->db()->u_exec('SELECT `id` FROM `@%_token` WHERE `AT`=?',[$at]);
+		$user=$this->system->succ->call_fun('login','is_login_token',[$at,$_SERVER['HTTP_USER_AGENT']]);
+		if($user){
+			$this->system->db()->u_exec('INSERT INTO `@%_join_server`(`serverid`,`uuid`,`uid`,`ip`,`time`) VALUE(?,?,?,?,?)',[$serverid,$uuid,$user['uid'],$this->system->uip(),time()]);
 		}
 		
 	}
