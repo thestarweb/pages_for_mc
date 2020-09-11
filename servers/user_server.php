@@ -12,6 +12,16 @@ class user_server{
 		}
 		return $this->system->succ->call_fun('login','try_to',['name',$username,$password]);
 	}
+	public function creat_user_info($uid,$name){
+		$uuid=$this->system->server('uuid')->get_offline_player_uuid($name);
+		$this->system->db()->u_exec('INSERT INTO `@%_user`(`id`,`uuid`,`name`,`skin`) VALUES(?,?,?,?)',[$uid,$uuid,$name,'']);
+		return $this->to_data([
+			'id'=>$uid,
+			'uuid'=>$uuid,
+			'name'=>$name,
+			'skin'=>''
+		]);
+	}
 	public function get_info($uid){
 		$uid+=0;
 		$res=$this->system->db()->exec('SELECT * FROM `@%_user` WHERE `id`='.$uid);
