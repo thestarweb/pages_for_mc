@@ -19,7 +19,11 @@ class api_control{
 								'accessToken'=>$at,
 								'clientToken'=>$ct,
 								'availableProfiles'=>$info,
-								'selectedProfile'=>$info[0]
+								'selectedProfile'=>$info[0],
+								'user'=>[
+									'id'=>get_uuid($uinfo['uid']),
+									'properties'=>[]
+								]
 							]);
 							exit;
 						}
