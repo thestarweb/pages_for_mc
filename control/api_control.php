@@ -10,23 +10,25 @@ class api_control{
 				if(isset($post->username)&&isset($post->password)&&$uinfo=$user->is_user($post->username,$post->password)){
 					if($uinfo['isok']){
 						$info=$user->get_info($uinfo['uid']);
-						if($info){
-							$at=$uinfo['key'];//md5(uniqid(mt_rand(), true));
-							$ct=isset($post->clientToken)?$post->clientToken:md5(time().rand(10,99));
-							//var_dump(md5(time().rand(10,99)));exit;
-							//$user->save_token($id,$at,$ct);
-							echo json_encode([
-								'accessToken'=>$at,
-								'clientToken'=>$ct,
-								'availableProfiles'=>$info,
-								'selectedProfile'=>$info[0],
-								'user'=>[
-									'id'=>get_uuid($uinfo['uid']),
-									'properties'=>[]
-								]
-							]);
-							exit;
+						if(!$info){
+							$all_info=$system->succ->call_fun('user','get_user_info',[$uinfo['uid']]);
+							$info=[$user->creat_user_info($uinfo['uid'],'_'.$all_info['username'])];
 						}
+						$at=$uinfo['key'];//md5(uniqid(mt_rand(), true));
+						$ct=isset($post->clientToken)?$post->clientToken:md5(time().rand(10,99));
+						//var_dump(md5(time().rand(10,99)));exit;
+						//$user->save_token($id,$at,$ct);
+						echo json_encode([
+							'accessToken'=>$at,
+							'clientToken'=>$ct,
+							'availableProfiles'=>$info,
+							'selectedProfile'=>$info[0],
+							'user'=>[
+								'id'=>get_uuid($uinfo['uid']),
+								'properties'=>[]
+							]
+						]);
+						exit;
 					}
 				}
 				header('HTTP/1.1 403 ForbiddenOperationException');
