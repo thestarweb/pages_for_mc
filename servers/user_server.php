@@ -7,8 +7,9 @@ class user_server{
 		$_SERVER['HTTP_USER_AGENT']="Minecrat Api";
 	}
 	public function is_user($username,$password){
-		// if($username=='2@star.star'&&$password=='123') return 1;
-		// if($username=='1@1.com'&&$password=='123') return 2;
+		if(substr($username,-1)=='@'){
+			$username=substr($username, 0,-1);
+		}
 		return $this->system->succ->call_fun('login','try_to',['name',$username,$password]);
 	}
 	public function get_info($uid){
