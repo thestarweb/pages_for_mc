@@ -10,7 +10,7 @@ class uuid_server{
 		$data[6] = chr(ord($data[6]) & 0x0f | 0x30);
 		//IETF variant
 		$data[8] = chr(ord($data[8]) & 0x3f | 0x80);
-		return self::createJavaUuid(bin2hex($data));
+		return bin2hex($data);
 	}
 
 	public function createJavaUuid($striped) {
