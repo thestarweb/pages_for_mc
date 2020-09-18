@@ -32,6 +32,10 @@ class api_control{
 					}
 				}
 				header('HTTP/1.1 403 ForbiddenOperationException');
+				$system->show_json([
+					"error"=>"登录失败",
+					"errorMessage"=>isset($uinfo)?$uinfo['info']:"参数错误"
+				]);
 				break;
 		}
 	}
@@ -92,7 +96,8 @@ class api_control{
 			'meta'=>[
 				'serverName'=>'Star Minecraft API',
 				'implementationName'=>'star',
-				'implementationVersion'=>'1.1.0'
+				'implementationVersion'=>'1.1.0',
+				'feature.non_email_login'=>true
 			],
 			'skinDomains'=>[
 				'.thestarweb.cn',
