@@ -91,6 +91,33 @@ class api_control{
 				break;
 		}
 	}
+	public function api_page($system,$a){
+		if($a=='profiles/minecraft'){
+			$post=get_post();
+			if($post==NULL)header('HTTP/1.1 204 No Content');
+			$from_mojang=[];
+			$res=[];
+			foreach ($post as $player_name) {
+				$arr=$user->get_info_by_UUID($arr[3]);
+				if($arr){
+					$from_mojang[] = [
+						'id'=>$arr[0]['uuid'],
+						'name'=>$arr[0]['name']
+					];
+				}else{
+					$from_mojang[] = $player_name;
+				}
+			}
+			if(isset($from_mojang[0])){
+				$data=json_decode(file_get_contents('https://api.mojang.com/profiles/minecraft'),false,stream_context_create([
+					'method' => 'POST',
+					'content'=>json_encode($from_mojang)
+				]));
+				$res+=$data;
+			}
+			echo json_encode($res);
+		}
+	}
 	public function index_page($system,$a){
 		echo json_encode([
 			'meta'=>[
